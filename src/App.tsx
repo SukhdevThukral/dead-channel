@@ -1,106 +1,90 @@
-import { createSignal } from 'solid-js'
-import heroImg from './assets/hero.png'
-import solidLogo from './assets/solid.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import {For, Show, createEffect} from 'solid-js';
+import {ROOMS} from './rooms';
+import {ask, QUESTIONS, type Question} from './radio';
 
-function App() {
-  const [count, setCount] = createSignal(0)
+import {
+  started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
+  agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
+  scared, won, radioLine, busy, type roomId, type Tool, 
+} from './state';
+
+import {startAudio, setStatic} from './audio';
+
+const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
+
+export default function App(){
+  const current = () => ROOMS[room()];
+
+  const begin = (reduce: boolean) => {
+    setReduced(reduce);
+    startAudio();
+    setStarted(true);
+  };
+
+  createEffect(() => {
+    if (!started()) return;
+    setStatic(tool() === 'radio' ? 0.04 + level() * 0.04 : 0);
+  });
+
+  const useAnchor = () => {
+    if (tool() === 'salt' && saltLeft() > 0) {
+      setSaltLeft(saltLeft() - 1);
+      setBanished([...banished(), room()]);
+    } else {
+      bump(10);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div class="hero">
-          <img src={heroImg} class="base" width="170" height="179" alt="" />
-          <img src={solidLogo} class="framework" alt="Solid logo" />
-          <img src={viteLogo} class="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+    <div class="game" classList={{reduced: reduced()}} style={{'--agitation':agitation() / 100}}>
+      <Show when={!started()}>
+        <div class='landing'>
+          <h1>DEAD CHANNEL</h1>
+          <p class='warn'>
+            CONTENT WARNING: sudden loud audio, flashing and darkening visuals, unsettling text and one jump scare. May affect people with photosensitive epilepsy. Headphones recommended.
           </p>
+          <div class='landing-buttons'>
+            <button onClick={() => begin(false)}>Continue</button>
+            <button onClick={() => begin(true)}>Continue with reduced effects</button>
+          </div>
         </div>
-        <button
-          type="button"
-          class="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count()}
-        </button>
-      </section>
+      </Show>
 
-      <div class="ticks"></div>
+      <Show when={started()}>
+        <div class='room' style={{'background-image':`url(${current().img})`}}>
+          <For each={Object.entries(current().exits)}>
+            {([to, s]) => (
+              <button class='hotspot' style={{left: `${s!.x}%`, top: `${s!.y}%`, width: `${s!.w}%`, height: `${s!.h}%`}} onClick={() => {setRoom(to as roomId); bump(2); }}/>
+            )}
+          </For>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg class="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img class="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://solidjs.com/" target="_blank">
-                <img class="button-icon" src={solidLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <Show when={current().anchor && !banished().includes(room())}>
+            <button class='hotspot anchor' style={{left: `${current().anchor!.spot.x}%`, top: `${current().anchor!.spot.y}%`,
+                width: `${current().anchor!.spot.w}%`, height: `${current().anchor!.spot.h}%`,}} onClick={useAnchor}/>
+          </Show>
         </div>
-        <div id="social">
-          <svg class="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div class="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        <Show when={tool() === 'radio'}>
+          <div class='radio'>
+            <div class='radio-screen'>{radioLine() || '~ static ~'}</div>
+            <div class='radio-buttons'>
+              <For each={Object.keys(QUESTIONS) as Question[]}>
+                {(q) => <button disabled={busy()} onClick={()=> ask(q)}>{QUESTIONS[q]}</button>}
+              </For>
+            </div>
+          </div>
+        </Show>
+
+        <div class='toolbar'>
+          <For each={TOOLS}>
+            {(t) => (
+              <button classList={{active: tool() === t}} onClick={() => setTool(t)}>
+                {t}{t === 'salt' ? `(${saltLeft()})` : ''}
+              </button>
+            )}
+          </For>
+        </div>
+      </Show>
+    </div>
   )
 }
-
-export default App
