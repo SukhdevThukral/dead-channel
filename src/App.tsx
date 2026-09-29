@@ -85,6 +85,21 @@ export default function App(){
           </For>
         </div>
       </Show>
+
+      <Show when={scared()}>
+        <div class='jumpscare'/>
+        <div class='end lost'>
+          <h2>SIGNAL LOST</h2>
+          <button onClick={() => location.reload()}>try again</button>
+        </div>
+      </Show>
+
+      <Show when={won() && !scared()}>
+        <div class='end'>
+          <h2>THE CHANNEL GOES QUIET</h2>
+          <button onClick={() => location.reload()}>play again</button>
+        </div>
+      </Show>
     </div>
-  )
+  );
 }
