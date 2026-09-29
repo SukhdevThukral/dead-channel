@@ -35,3 +35,117 @@ button:disabled{
   padding: 24px;
   text-align: center;
 }
+
+.landing h1 {
+  color: #c22;
+  letter-spacing: 0.25em;
+  margin: 0;
+}
+
+.warn {
+  max-width: 560px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.landing-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.landing-buttons button, .end button {
+  background: transparent;
+  color: #aaa;
+  border: 1px solid #555;
+  padding: 8px 16px;
+  letter-spacing: 0.08em;
+}
+
+.landing-buttons button:hover, .end button:hover {
+  color: #fff;
+  border-color: #aaa;
+}
+
+.room {
+  position: relative;
+  height: calc(100% - 56px);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #0a0a0a;
+  filter: brightness(calc(1 - var(--agitation) * 0.5)) contrast(calc(1 + var(--agitation) *0.3));
+  transition: filter 1s;
+}
+
+.reduced .room {
+  filter: none;
+  transition: none;
+}
+
+.hotspot {
+  position: absolute;
+  background: rgba(255,255,255,0.08); border: 0;
+}
+
+.hotspot:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+.radio{
+  position: absolute;
+  left: 50%;
+  bottom: 72px;
+  transform: translateX(-50%);
+  width: min(560px, 92%);
+  background: #141414;
+  border: 2px solid #555;
+  padding: 14px;
+  z-index: 5;
+}
+
+.radio-screen {
+  min-width: 2.4em;
+  background: #060a06;
+  color: #6f6;
+  padding: 10px;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.radio-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.radio-buttons buttons {
+  flex: 1;
+  background: #1c1c1c;
+  color: #ccc;
+  border: 1px solid #555;
+  padding: 8px;
+}
+
+.toolbar {
+  height: 56px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}
+
+.toolbar button {
+  background: #1c1c1c;
+  color: #aaa;
+  border: 1px solid #444;
+  padding: 8px 14px;
+}
+
+.toolbar .active {
+  color: #fff;
+  border-color: #aaa;
+}
