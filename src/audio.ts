@@ -52,3 +52,14 @@ export function silence() {
         staticGain!.gain.setTargetAtTime(0, ctx.currentTime , 0.02);
     }
 }
+
+export function sting() {
+    if (!ctx) return;
+    const g = ctx.createGain();
+    g.gain.value = 1;
+
+    const s = noise();
+    s.connect(g).connect(ctx.destination);
+    s.start();
+    s.stop(ctx.currentTime + 0.9);
+}
