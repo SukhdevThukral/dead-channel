@@ -33,9 +33,18 @@ const REPLIES: Record<Question, string[][]> = {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let last: Question | null = null;
 
+export function pauseRecognition(){
+    recognition?.stop();
+}
+
+export function resumeRecognition(){
+    if (recognition) recognition.start();
+}
+
 export async function ask(q: Question) {
     if (busy()) return;
     setBusy(true);
+    window.speechSynthesis.cancel();
 
     bump(last === q ? 12:6);
     last = q;
@@ -47,44 +56,36 @@ export async function ask(q: Question) {
     const pool = REPLIES[q][level()];
     const reply = pool[Math.floor(Math.random() * pool.length)];
 
+    pauseRecognition();
+
     for (const word of reply.split(' ')){
-        await sleep(350 + Math.random()*400);
-        burst(0.12, 90);
+        await sleep(400 + Math.random()*350);
+        burst(0.04, 60);
         speak(word);
         setRadioLine((line) => (line ? line + ' ' : '') + word);
     }
 
+    await sleep(reply.split(' ').length * 800 + 1000);
+    resumeRecognition();
+
     setBusy(false);
 }
 
-let audioCtx: AudioContext | null = null;
-function getAudioCtx(): AudioContext {
-    if (!audioCtx) audioCtx = new AudioContext();
-    return audioCtx;
-}
 
 function speak(word: string) {
-    const say = (voices: SpeechSynthesisVoice[]) => {
-        const u = new SpeechSynthesisUtterance(word);
-        u.rate = 0.6;
-        u.pitch = 0.1;
-        u.volume = 0.9;
-        const dark = voices.find(v => 
-            v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('mark') || v.name.toLowerCase().includes('daniel') 
-        );
-        if (dark) u.voice = dark;
-        window.speechSynthesis.speak(u);
-    };
+    window.speechSynthesis.cancel();
 
     const voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0){
-        say(voices);
-    } else {
-        window.speechSynthesis.onvoiceschanged = () => {
-            say(window.speechSynthesis.getVoices());
-            window.speechSynthesis.onvoiceschanged = null;
-        };
-    }
+    const u = new SpeechSynthesisUtterance(word);
+
+    const voice = voices.find(v => v.name === 'Google UK English Male') ?? voices.find(v => v.name.toLowerCase().includes('david'));
+    if (voice) u.voice = voice;
+
+    u.rate = 0.4;
+    u.pitch = 0;
+    u.volume = 1;
+
+    window.speechSynthesis.speak(u);
 }
 
 let recognition: any = null;
@@ -118,7 +119,7 @@ export function startVoice(onDenied: () => void) {
         };
 
         recognition.onend = () => {
-            if (recognition){
+            if (recognition && !busy()){
                 recognition.start();
             };
         }
