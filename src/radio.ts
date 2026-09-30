@@ -57,7 +57,13 @@ export async function ask(q: Question) {
     setBusy(false);
 }
 
-async function speak(word: string): Promise<void> {
+let audioCtx: AudioContext | null = null;
+function getAudioCtx(): AudioContext {
+    if (!audioCtx) audioCtx = new AudioContext();
+    return audioCtx;
+}
+
+function speak(word: string) {
     const say = (voices: SpeechSynthesisVoice[]) => {
         const u = new SpeechSynthesisUtterance(word);
         u.rate = 0.6;
