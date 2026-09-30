@@ -33,11 +33,11 @@ const REPLIES: Record<Question, string[][]> = {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let last: Question | null = null;
 
-export function pauseRecognition(){
+function pauseRecognition(){
     recognition?.stop();
 }
 
-export function resumeRecognition(){
+function resumeRecognition(){
     if (recognition) recognition.start();
 }
 
@@ -119,15 +119,16 @@ export function startVoice(onDenied: () => void) {
         };
 
         recognition.onend = () => {
-            if (recognition && !busy()){
-                recognition.start();
+            if (recognition){
+                return;
             };
+            if (!busy()) recognition.start();
         }
 
         recognition.onerror = (e:any) => {
             if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
-            onDenied();
-            recognition = null;
+                onDenied();
+                recognition = null;
             }
         };
 
