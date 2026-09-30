@@ -2,13 +2,14 @@ import {For, Show, createEffect} from 'solid-js';
 import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
 
+
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
   scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, type roomId, type Tool, 
 } from './state';
 
-import {startAudio, setStatic} from './audio';
+import {startAudio, setStatic, startDrone, updateDrone} from './audio';
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
 
@@ -24,6 +25,12 @@ export default function App(){
   createEffect(() => {
     if (!started()) return;
     setStatic(tool() === 'radio' ? 0.02 + level() * 0.02 : 0);
+  });
+
+  createEffect(() => {
+    if (!started) return;
+    startDrone();
+    updateDrone(agitation() / 100);
   });
 
   const useAnchor = () => {
