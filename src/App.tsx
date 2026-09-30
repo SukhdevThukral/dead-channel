@@ -1,11 +1,11 @@
 import {For, Show, createEffect} from 'solid-js';
 import {ROOMS} from './rooms';
-import {ask, QUESTIONS, type Question} from './radio';
+import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
-  scared, won, radioLine, busy, type roomId, type Tool, 
+  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, type roomId, type Tool, 
 } from './state';
 
 import {startAudio, setStatic} from './audio';
@@ -35,6 +35,16 @@ export default function App(){
     }
   };
 
+  const toggleVoice=()=> {
+    if (voiceOn()) {
+      stopVoice();
+      setVoiceOn(false);
+    } else {
+      startVoice(() => setVoiceDenied(true));
+      setVoiceOn(true);
+    }
+  };
+
   return (
     <div class="game" classList={{reduced: reduced()}} style={{'--agitation':agitation() / 100}}>
       <Show when={!started()}>
@@ -46,7 +56,7 @@ export default function App(){
             <div class='landing-cw'>
               <span class='cw-label'>⚠⚠ CONTENT WARNING </span>
               <p>
-                This experience contains flashing and suddent visual changes, sudden loud audio, unsettling text, and jumpscare.<br/>
+                This experience contains flashing and sudden visual changes, sudden loud audio, unsettling text, and jumpscare.<br/>
                 It may affect people with photosensitive epilepsy.
               </p>
               <p class='headphones-note'>
@@ -89,6 +99,16 @@ export default function App(){
               <For each={Object.keys(QUESTIONS) as Question[]}>
                 {(q) => <button disabled={busy()} onClick={()=> ask(q)}>{QUESTIONS[q]}</button>}
               </For>
+            </div>
+            <div class='voice-row'>
+              <Show when={!voiceDenied()}>
+                <button class='voice-btn' classList={{active: voiceOn()}} onClick={toggleVoice}>
+                  {voiceOn() ? 'LISTENING..' : 'SPEAK TO IT'}
+                </button>
+              </Show>
+              <Show when={voiceDenied()}>
+                <span class='voice-denied'>mic denied - use the buttons above</span>
+              </Show>
             </div>
           </div>
         </Show>
