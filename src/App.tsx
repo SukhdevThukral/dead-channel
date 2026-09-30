@@ -1,25 +1,30 @@
 import {For, Show, createEffect} from 'solid-js';
 import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
+import { startEvents } from './events';
 
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
-  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, type roomId, type Tool, 
+  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, type roomId, type Tool,
+  setExamineText, 
 } from './state';
 
 import {startAudio, setStatic, updateDrone} from './audio';
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
+const emf_label = ['', 'QUIET', 'FAINT', 'ACTIVE', 'STRONG', 'PEAK'];
 
 export default function App(){
   const current = () => ROOMS[room()];
+  let examineTimer: ReturnType<typeof setTimeout> | null = null;
 
   const begin = (reduce: boolean) => {
     setReduced(reduce);
     startAudio();
     setStarted(true);
+    startEvents();
   };
 
   createEffect(() => {
@@ -51,6 +56,23 @@ export default function App(){
     }
   };
 
+  const showExamine = (text: string, ms = 4500) => {
+    if (examineTimer) {
+      clearTimeout(examineTimer);
+    }
+    setExamineText(text);
+    examineTimer = setTimeout(() => setExamineText(''), ms);
+  };
+
+  const examineRoom = () => {
+    const texts = current().examine[level()];
+    showExamine(texts[Math.floor(Math.random() * texts.length)]);
+    bump(4);
+  };
+
+  const revealFlashlight = () => {
+    showExamine(current().flashlightReveal,  6000)
+  }
   return (
     <div class="game" classList={{reduced: reduced()}} style={{'--agitation':agitation() / 100}}>
       <Show when={!started()}>
