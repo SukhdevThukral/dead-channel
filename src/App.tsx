@@ -23,7 +23,7 @@ export default function App(){
 
   createEffect(() => {
     if (!started()) return;
-    setStatic(tool() === 'radio' ? 0.04 + level() * 0.04 : 0);
+    setStatic(tool() === 'radio' ? 0.02 + level() * 0.02 : 0);
   });
 
   const useAnchor = () => {
