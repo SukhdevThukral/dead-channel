@@ -11,6 +11,7 @@ function noise(){
 }
 
 export function startAudio(){
+    window.speechSynthesis.getVoices();
     if (ctx) return;
 
     ctx = new AudioContext();
