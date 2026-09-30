@@ -50,10 +50,35 @@ export async function ask(q: Question) {
     for (const word of reply.split(' ')){
         await sleep(350 + Math.random()*400);
         burst(0.12, 90);
+        speak(word);
         setRadioLine((line) => (line ? line + ' ' : '') + word);
     }
 
     setBusy(false);
+}
+
+async function speak(word: string): Promise<void> {
+    const say = (voices: SpeechSynthesisVoice[]) => {
+        const u = new SpeechSynthesisUtterance(word);
+        u.rate = 0.6;
+        u.pitch = 0.1;
+        u.volume = 0.9;
+        const dark = voices.find(v => 
+            v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('mark') || v.name.toLowerCase().includes('daniel') 
+        );
+        if (dark) u.voice = dark;
+        window.speechSynthesis.speak(u);
+    };
+
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0){
+        say(voices);
+    } else {
+        window.speechSynthesis.onvoiceschanged = () => {
+            say(window.speechSynthesis.getVoices());
+            window.speechSynthesis.onvoiceschanged = null;
+        };
+    }
 }
 
 let recognition: any = null;
