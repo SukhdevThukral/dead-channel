@@ -3,6 +3,20 @@ let buf: AudioBuffer | undefined;
 let staticGain: GainNode | undefined;
 let muted = false;
 
+let droneOsc: OscillatorNode | undefined;
+let droneGain: GainNode | undefined;
+
+export function startDrone() {
+    if (!ctx || droneOsc) return;
+    droneOsc = ctx.createOscillator();
+    droneGain = ctx.createGain();
+    droneOsc.type = 'sine';
+    droneOsc.frequency.value = 55;
+    droneGain.gain.value = 0;
+    droneOsc.connect(droneGain).connect(ctx.destination);
+    droneOsc.start();
+}
+
 function noise(){
     const s = ctx!.createBufferSource();
     s.buffer = buf!;
@@ -28,6 +42,8 @@ export function startAudio(){
     const loop = noise();
     loop.connect(staticGain);
     loop.start();
+
+    startDrone();
 }
 
 export function setStatic(volume: number){
@@ -63,4 +79,10 @@ export function sting() {
     s.connect(g).connect(ctx.destination);
     s.start();
     s.stop(ctx.currentTime + 0.9);
+}
+
+export function updateDrone(agitationRatio: number){
+    if (!ctx || !droneGain || !droneOsc) return;
+    droneGain.gain.setTargetAtTime(agitationRatio * 0.15, ctx.currentTime, 0.5);
+    droneOsc.frequency.setTargetAtTime(55 + agitationRatio *40, ctx.currentTime, 0.5);
 }
