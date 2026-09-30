@@ -14,6 +14,8 @@ export const [banished, setBanished] = createSignal<roomId[]>([]);
 export const [scared, setScared] = createSignal(false);
 export const [radioLine, setRadioLine] = createSignal('');
 export const [busy, setBusy] = createSignal(false);
+export const [voiceOn, setVoiceOn] = createSignal(false);
+export const [voiceDenied, setVoiceDenied] = createSignal(false);
 
 export const won = () => banished().length >= 2;
 
