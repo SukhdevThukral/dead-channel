@@ -55,3 +55,52 @@ export async function ask(q: Question) {
 
     setBusy(false);
 }
+
+let recognition: any = null;
+
+export function startVoice(onDenied: () => void) {
+    const speechRecognition = (window as any).speechRecognition || (window as any).webkitSpeechRecoginition;
+
+    if (!speechRecognition) {
+        onDenied();
+        return;
+    }
+
+    recognition = new speechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (e: any) => {
+        const transcript: string = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
+        if (transcript.includes('there') || transcript.includes('hello') || transcript.includes('anyone'))
+            ask('here');
+        else if (transcript.includes('name') || transcript.includes('who'))
+            ask('name');
+        else if (transcript.includes('want') || transcript.includes('why'))
+            ask('want');
+        else
+            bump(4);
+    };
+
+    recognition.onend = () => {
+        if (recognition){
+            recognition.start();
+        };
+    }
+
+    recognition.onerror = (e:any) => {
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
+            onDenied();
+            recognition = null;
+        }
+    };
+
+    recognition.start();
+}
+
+export function stopVoice() {
+    const r = recognition;
+    recognition = null;
+    r?.stop()
+}
