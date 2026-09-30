@@ -39,13 +39,31 @@ export default function App(){
     <div class="game" classList={{reduced: reduced()}} style={{'--agitation':agitation() / 100}}>
       <Show when={!started()}>
         <div class='landing'>
-          <h1>DEAD CHANNEL</h1>
-          <p class='warn'>
-            CONTENT WARNING: sudden loud audio, flashing and darkening visuals, unsettling text and one jump scare. May affect people with photosensitive epilepsy. Headphones recommended.
-          </p>
-          <div class='landing-buttons'>
-            <button onClick={() => begin(false)}>Continue</button>
-            <button onClick={() => begin(true)}>Continue with reduced effects</button>
+          <div class='landing-inner'>
+            <div class='landing-tag'> · FIELD INVESTIGATION KIT</div>
+            <h1 class='landing-title'>DEAD<br/>CHANNEL</h1>
+            <div class='landing-divider'/>
+            <div class='landing-cw'>
+              <span class='cw-label'>⚠⚠ CONTENT WARNING </span>
+              <p>
+                This experience contains flashing and suddent visual changes, sudden loud audio, unsettling text, and jumpscare.<br/>
+                It may affect people with photosensitive epilepsy.
+              </p>
+              <p class='headphones-note'>
+                › Headphones are strongly recommended.
+              </p>
+            </div>
+            <div class='landing-buttons'>
+              <button onClick={() => begin(false)}>
+                ENTER WITH FULL EFFECTS
+              </button>
+              <button class='btn-reduced' onClick={() => begin(true)}>
+                ENTER WITH REDUCED EFFECTS
+              </button>
+            </div>
+            <div class='landing-footer'>
+              SIGNAL ACTIVE · UNKNOWN LOCATION · PROCEED WITH CAUTION
+            </div>
           </div>
         </div>
       </Show>
