@@ -43,11 +43,38 @@ function every(fn: () => void, ms: number) {
 export function startEvents() {
     timeouts.forEach(clearTimeout);
     intervals.forEach(clearInterval);
+
     timeouts = [];
     intervals = [];
+
+    scheduleRandomEvent();
+    scheduleGhostMove();
+    scheduleGhostFlash();
+    scheduleHeartbeat();
+
+    every(() => {
+        if (scared() || won()) {
+            return;
+        }
+        const g = ghostRoom(), p = room();
+        const base = g === p ? 4 : ADJACENT[p].includes(g) ? 2 : 1;
+        const spike = Math.random() < 0.12 ? 2 : 0;
+        setEmfLevel(Math.min(5, base + Math.floor(Math.random() * 2) + spike));
+    }, 1800);
+
+    every(() => {
+        if (scared() || won()){
+            return;
+        }
+        if (ghostRoom() === room()) {
+            bump(2);
+        }
+    }, 5000);
+
+
 }
 
-export function stopEvents() {
+export function stopEvents(){
     timeouts.forEach(clearTimeout);
     intervals.forEach(clearInterval);
 
@@ -95,4 +122,29 @@ function scheduleGhostMove() {
         }
         scheduleGhostMove();
     }, 20000 + Math.random() * 25000);
+}
+
+function scheduleGhostFlash() {
+    later(() => {
+        if (scared() || won()) {
+            return;
+        }
+        if (ghostRoom() === room() && agitation() > 30){
+            setShowGhost(true);
+            burst(0.05, 100);
+            later(() => setShowGhost(false), 150 + Math.floor(Math.random() *200));
+        }
+        scheduleGhostFlash();
+    }, 8000 + Math.random() * 12000);
+}
+
+function scheduleHeartbeat() {
+    if (scared() || won()){
+        return;
+    }
+    const a = agitation();
+    if (a>50){
+        heartbeat();
+    }
+    later(scheduleHeartbeat, a>85 ? 700 : a> 70 ? 950 : 1500);
 }
