@@ -23,7 +23,7 @@ const REPLIES: Record<Question, string[][]> = {
         ['NO NAME', 'RUN', 'YOURS SOON'],
     ],
     want: [
-        ['company', 'to be hard', 'stay a while'],
+        ['company', 'to be heard', 'stay a while'],
         ['you to stay', 'the door is locked', 'listen'],
         ['YOU TO LEAVE', 'my house', 'STOP'],
         ['OUT', 'YOU', 'NOW'],
@@ -91,8 +91,12 @@ export function startVoice(onDenied: () => void) {
 
     recognition.onerror = (e:any) => {
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed'){
-            onDenied();
-            recognition = null;
+            setTimeout(() => {
+                if (recognition) {
+                    onDenied();
+                    recognition = null;
+                }
+            }, 500)
         }
     };
 
@@ -102,5 +106,5 @@ export function startVoice(onDenied: () => void) {
 export function stopVoice() {
     const r = recognition;
     recognition = null;
-    r?.stop()
+    r?.stop();
 }
