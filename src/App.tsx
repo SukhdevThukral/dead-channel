@@ -7,8 +7,7 @@ import { startEvents } from './events';
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
-  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, type roomId, type Tool,
-  setExamineText, 
+  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, emfLevel, eventText, examineText, showGhost, type roomId, type Tool, setExamineText, 
 } from './state';
 
 import {startAudio, setStatic, updateDrone} from './audio';
@@ -107,7 +106,19 @@ export default function App(){
       </Show>
 
       <Show when={started()}>
+        <div class='agitation-bar'>
+          <div class='agitation-fill' style={{width: `${agitation()}%`}}/>
+        </div>
+
         <div class='room' style={{'background-image':`url(${current().img})`}}>
+          <Show when={tool() === 'flashlight'}>
+            <div class='flashlight-overlay'/>
+          </Show>
+
+          <Show when={showGhost()}>
+            <div class='ghost-flash'/>
+          </Show>
+
           <For each={Object.entries(current().exits)}>
             {([to, s]) => (
               <button class='hotspot' style={{left: `${s!.x}%`, top: `${s!.y}%`, width: `${s!.w}%`, height: `${s!.h}%`}} onClick={() => {setRoom(to as roomId); bump(2); }}/>
@@ -125,7 +136,9 @@ export default function App(){
             <div class='radio-screen'>{radioLine() || '~ static ~'}</div>
             <div class='radio-buttons'>
               <For each={Object.keys(QUESTIONS) as Question[]}>
-                {(q) => <button disabled={busy()} onClick={()=> ask(q)}>{QUESTIONS[q]}</button>}
+                {(q) => (
+                  <button disabled={busy()} onClick={()=> ask(q)}>{QUESTIONS[q]}</button>
+                )}
               </For>
             </div>
             <div class='voice-row'>
@@ -140,6 +153,48 @@ export default function App(){
             </div>
           </div>
         </Show>
+
+        <Show when={tool() === 'emf'}>
+          <div class='emf-panel'>
+            <div class='emf-label'>EMF READER</div>
+            <div class='emf-bars'>
+              <For each={[1,2,3,4,5]}>
+                {(n) => (
+                  <div class='emf-bar' classList={{lit: emfLevel() >= n, danger: n >= 4 && emfLevel() >= n,}}/>
+                  )}
+              </For>
+            </div>
+            <div class='emf-reading' classList={{'emf-danger': emfLevel() >= 4}}>
+              {emf_label[emfLevel()]}
+            </div>
+          </div>
+        </Show>
+
+        <Show when={tool() === 'flashlight'}>
+          <div class='tool-panel'>
+            <button class='tool-action-btn' onClick={revealFlashlight}>
+              LOOK CAREFULLY
+            </button>
+          </div>
+        </Show>
+
+        <Show when={tool() === 'hand'}>
+          <div class='tool-panel'>
+            <button class='tool-action-btn' onClick={examineRoom}>
+              EXAMINE ROOM
+            </button>
+          </div>
+        </Show>
+
+        <Show when={examineText()}>
+          <div class='examine-result'>{examineText()}</div>
+        </Show>
+
+        <Show when={eventText()}>
+          <div class='event-notification'>{eventText()}</div>
+        </Show>
+
+        <div class='hud-room'>{room().toUpperCase()}</div>
 
         <div class='toolbar'>
           <For each={TOOLS}>
