@@ -21,7 +21,7 @@ export const [ghostRoom, setGhostRoom] = createSignal<roomId>('bedroom');
 export const [emfLevel,setEmfLevel] = createSignal(1);
 export const [eventText, setEventText] = createSignal('');
 export const [examineText, setExamineText] = createSignal('');
-export const [showText, setShowGhost] = createSignal(false);
+export const [showGhost, setShowGhost] = createSignal(false);
 
 export const won = () => banished().length >= 2;
 
