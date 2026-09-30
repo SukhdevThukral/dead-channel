@@ -37,7 +37,6 @@ export function startAudio(){
 
     staticGain = ctx.createGain();
     staticGain.gain.value = 0;
-    noise().connect(staticGain).connect(ctx.destination);
 
     const loop = noise();
     loop.connect(staticGain);
