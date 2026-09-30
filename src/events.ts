@@ -54,3 +54,45 @@ export function stopEvents() {
     timeouts = [];
     intervals = [];
 }
+
+function scheduleRandomEvent() {
+    later(() => {
+        if (scared() || won()) {
+            return;
+        }
+        const eve = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+
+        setEventText(eve.text);
+        bump(eve.bumpVal);
+        if (eve.sound === 'creak') {
+            creak();
+        } else if (eve.sound === 'knock') {
+            knock();
+        } else if (eve.sound === 'burst') {
+            burst(0.15, 250);
+        }
+        later(() => setEventText(''), 3500);
+        scheduleRandomEvent();
+    }, 12000 + Math.random() * 20000);
+}
+
+function scheduleGhostMove() {
+    later(() => {
+        if (scared() || won()) {
+            return;
+        }
+        const current = ghostRoom();
+        const opts = ADJACENT[current].filter(r => !banished().includes(r));
+        if (opts.length) {
+            const next = opts[Math.floor(Math.random() * opts.length)] as roomId;
+            setGhostRoom(next);
+            if (next === room()) {
+                setEventText('a cold presence enters the room...')
+                bump(15);
+                creak();
+                later(() => setEventText(''), 3000);
+            }
+        }
+        scheduleGhostMove();
+    }, 20000 + Math.random() * 25000);
+}
