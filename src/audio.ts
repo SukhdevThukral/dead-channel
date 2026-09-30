@@ -69,6 +69,64 @@ export function silence() {
     }
 }
 
+export function heartbeat() {
+    if (!ctx || muted){
+        return;
+    }
+    const t = ctx.currentTime;
+    const make  = (freq: number, vol: number, when: number, dur: number) => {
+        const o = ctx!.createOscillator();
+        const g = ctx!.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0, when);
+        g.gain.linearRampToValueAtTime(vol,when+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001,when+dur);
+        o.connect(g).connect(ctx!.destination);
+        o.start(when);
+        o.stop(when+dur);
+    };
+    make(60,0.7,t,0.28);
+    make(50,0.5,t+0.18, 0.26);
+}
+
+export function creak(){
+    if (!ctx || muted || !buf){
+        return;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filt = ctx.createBiquadFilter();
+    filt.type ='bandpass';
+    filt.frequency.value = 500 + Math.random() * 800;
+    filt.Q.value = 18;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 0.1);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.3);
+    src.connect(filt).connect(g).connect(ctx.destination);
+    src.start();
+    src.stop(ctx.currentTime + 1.3);
+}
+
+export function knock() {
+    if (!ctx || muted) {
+        return;
+    }
+    [0, 0.38, 0.76].forEach(dt => {
+        const o = ctx!.createOscillator();
+        const g = ctx!.createGain();
+        o.type = 'sine';
+        o.frequency.value = 90 + Math.random() * 50;
+        const t = ctx!.currentTime + dt;
+        g.gain.setValueAtTime(0.55, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t+0.14);
+        o.connect(g).connect(ctx!.destination);
+        o.start(t);
+        o.stop(t + 0.14);
+    });
+}
+
 export function sting() {
     if (!ctx) return;
     const g = ctx.createGain();
