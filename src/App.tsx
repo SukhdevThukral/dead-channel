@@ -1,7 +1,7 @@
 import {For, Show, createEffect} from 'solid-js';
 import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
-import { startEvents, stopEvents, ADJACENT } from './events';
+import { startEvents, stopEvents } from './events';
 
 
 import {
@@ -21,7 +21,7 @@ const hints: Record<Tool, string> = {
   salt: 'not sure abt this yet :( ',
 }
 
-const allRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
+// const allRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
 const emf_label = ['', 'QUIET', 'FAINT', 'ACTIVE', 'STRONG', 'PEAK'];
@@ -40,6 +40,12 @@ export default function App(){
   createEffect(() => {
     if (!started()) return;
     setStatic(tool() === 'radio' ? 0.02 + level() * 0.02 : 0);
+  });
+
+  createEffect(() => {
+    if (won() && !scared()) {
+      winSound();
+    }
   });
 
   createEffect(() => {
