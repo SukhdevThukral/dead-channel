@@ -1,17 +1,27 @@
 import {For, Show, createEffect} from 'solid-js';
 import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
-import { startEvents, stopEvents } from './events';
+import { startEvents, stopEvents, ADJACENT } from './events';
 
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
-  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, emfLevel, eventText, examineText, showGhost, type roomId, type Tool, setExamineText,
-  ghostRoom, 
+  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, emfLevel, eventText, examineText, showGhost, type roomId, type Tool, setExamineText, ghostRoom,
+  setAgitation, 
 } from './state';
 
-import {startAudio, setStatic, updateDrone, knock} from './audio';
+import {startAudio, setStatic, updateDrone, knock, winSound} from './audio';
+
+const hints: Record<Tool, string> = {
+  hand: 'examine the room, text changes as the agitation rises',
+  radio: 'ask it questions or speak aloud with your mic.',
+  emf: 'detects presence - 5 bars meaning it is right here close to you',
+  flashlight: 'reveals hidden details, use look carefully in each room to check',
+  salt: 'not sure abt this yet :( ',
+}
+
+const allRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
 const emf_label = ['', 'QUIET', 'FAINT', 'ACTIVE', 'STRONG', 'PEAK'];
@@ -37,18 +47,36 @@ export default function App(){
     updateDrone(agitation() / 100);
   });
 
-  const useAnchor = () => {
-    if (tool() === 'salt' && saltLeft() > 0) {
-      setSaltLeft(saltLeft() - 1);
-      setBanished([...banished(), room()]);
-      knock();
-      showExamine('the presence recoils and the room has been sealed.', 3000);
-    } else {
-      bump(10);
+  const roomProximity = (r: roomId) => {
+    if (banished().includes(r)) return -1;
+
+    const g = ghostRoom();
+    if (g===r) return 2;
+
+    if (ADJACENT[r].includes(g)) {
+      return 1;
     }
+
+    return 0;
   };
 
+  const useAnchor = () => {
+    if (tool() !== 'salt') {
+      bump(10);
+      return;
+    }
+    if (saltLeft() <= 0){
+      showExamine('No salt remaining.', 2000);
+      return;
+    }
 
+    setSaltLeft(saltLeft() - 1);
+    setBanished([...banished(), room()]);
+    setAgitation(a => Math.max(0, a - 20));
+
+    knock();
+    showExamine('the presence recoils and the room has been sealed.', 3500);
+  };
 
   const toggleVoice=()=> {
     if (voiceOn()) {
@@ -98,6 +126,21 @@ export default function App(){
                 › Headphones are strongly recommended.
               </p>
             </div>
+            <div class='landing-tools'>
+              <For each={TOOLS}>
+                {(t) => (
+                  <div class='landing-tool-row'>
+                    <span class='landing-tool-name'>{t.toUpperCase()}</span>
+                    <span class='landing-tool-hint'>{hints[t]}</span>
+                  </div>
+                )}
+              </For>
+            </div>
+
+            <div class='landing-goal'>
+              YOUR GOAL is to banish the presence from 2 rooms before the agitation of the 'creature' reaches 100.
+            </div>
+
             <div class='landing-buttons'>
               <button onClick={() => begin(false)}>
                 ENTER WITH FULL EFFECTS
@@ -116,6 +159,22 @@ export default function App(){
       <Show when={started()}>
         <div class='agitation-bar'>
           <div class='agitation-fill' style={{width: `${agitation()}%`}}/>
+        </div>
+
+        <div class='proximity-map'>
+          <For each={allRooms}>
+            {(r) => (
+              <div class='prox-room' classList={{
+                'prox-current':room() === r,
+                'prox-here': roomProximity(r) === 2,
+                'prox-adjacent': roomProximity(r) === 1,
+                'prox-sealed': roomProximity(r) === -1,
+              }}>
+                <div class='prox-dot'/>
+                <span class='prox-label'>{r.slice(0, 3).toUpperCase()}</span>
+              </div>
+            )}
+          </For>
         </div>
 
         <div class='room' style={{'background-image':`url(${current().img})`}}>
