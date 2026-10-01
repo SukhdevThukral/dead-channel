@@ -418,6 +418,81 @@ button:disabled{
   50% {opacity: 0.2;}
 }
 
+.tool-panel {
+  position: absolute;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  z-index: 15;
+}
+
+.tool-action-btn {
+  background: transparent;
+  border: 1px solid #555;
+  color: #bbb;
+  padding: 11px 24px;
+  letter-spacing: 0.15rem;
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
+  transition: border-color 0.2s, color 0.2;
+}
+
+.tool-action-btn:hover{
+  border-color: #aaa;
+  color: #fff;
+}
+
+.examine-result {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(500px, 86%);
+  background: rgba(0,0,0,0.9);
+  border-left: 2px solid #444;
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: #bbb;
+  letter-spacing: 0.04em;
+  z-index: 20;
+  pointer-events: none;
+  animation: fadein 0.3s ease;
+}
+
+.event-notification {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(400px, 84%);
+  color: #b22;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  z-index: 25;
+  pointer-events: none;
+  animation: event-flash 3.5s ease forwards;
+}
+
+@keyframes event-flash {
+  0% {opacity: 0; transform: translateX(-50%) translateY(8px);}
+  10% {opacity: 1; transform: translateX(-50%) translateY(0);}
+  70% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+.hud-room {
+  position: absolute;
+  bottom: 68px;
+  left: 12px;
+  font-size: 0.52rem;
+  letter-spacing: 0.22em;
+  color: #3a3a3a;
+  z-index: 10;
+  pointer-events: none;
+}
+
 .toolbar {
   height: 56px;
   display: flex;
@@ -425,31 +500,49 @@ button:disabled{
   align-items: center;
   justify-content: center;
   background: #111;
+  position: relative;
+  z-index: 20;
 }
 
 .toolbar button {
   background: #1c1c1c;
-  color: #aaa;
-  border: 1px solid #444;
+  color: #777;
+  border: 1px solid #333;
   padding: 8px 14px;
+  font-size: 0.7rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.toolbar button:hover {
+  color: #bbb;
+  border-color: #555;
 }
 
 
 .toolbar .active {
   color: #fff;
-  border-color: #aaa;
+  border-color: #888;
 }
 
 .jumpscare {
   position: fixed;
   inset: 0;
-  background: #000 url('/ghost.png') center / contain no-repeat; z-index: 100; animation: scare 1.8s ease-out forwards;
+  background: #000 url('/ghost.png') center / contain no-repeat;
+  z-index: 100; 
+  animation: scare 1.8s ease-out forwards;
 }
 
 @keyframes scare {
   0% {opacity: 1; transform: scale(1);}
   30% {opacity: 1; transform: scale(1.05);}
   100% {opacity: 0; transform: scale(1.1);}
+}
+
+.reduced .jumpscare {
+  animation: none;
+  opacity: 0;
 }
 
 @keyframes flicker {
@@ -468,11 +561,6 @@ button:disabled{
   100% {opacity: 1;}
 }
 
-.reduced .jumpscare {
-  animation: none;
-  opacity: 0;
-}
-
 .end {
   position: fixed;
   inset: 0;
@@ -488,6 +576,23 @@ button:disabled{
 .end h2 {
   color: #c22;
   letter-spacing: 0.2em;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.end button {
+  background: transparent;
+  color: #aaa;
+  border: 1px solid #555;
+  padding: 8px 20px;
+  letter-spacing: 0.1em;
+  font-family: 'Courier New', monospace;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.end button:hover {
+  color: #fff;
+  border-color: #aaa;
 }
 
 .lost {
@@ -498,4 +603,34 @@ button:disabled{
 
 @keyframes fadein {
   to {opacity: 1;}
+}
+
+.emf-device-img {
+  width: 90px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 6px rgba(0,200,0,0.3));
+}
+
+.flashlight-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.flashlight-img {
+  width: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 8px rgba(255,220,80,0.4));
+  animation: torch-flicker 2s infinite;
+}
+
+@keyframes torch-flicker {
+  0%, 89%, 91%, 94%, 96%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255,220,80,0.4));
+  }
+  90% {filter: drop-shadow(0 0 4px rgba(255,220,80,0.15));}
+  95% {filter: drop-shadow(0 0 12px rgba(255, 220, 80, 0.7));}
 }
