@@ -47,19 +47,6 @@ export default function App(){
     updateDrone(agitation() / 100);
   });
 
-  const roomProximity = (r: roomId) => {
-    if (banished().includes(r)) return -1;
-
-    const g = ghostRoom();
-    if (g===r) return 2;
-
-    if (ADJACENT[r].includes(g)) {
-      return 1;
-    }
-
-    return 0;
-  };
-
   const useAnchor = () => {
     if (tool() !== 'salt') {
       bump(10);
@@ -161,20 +148,9 @@ export default function App(){
           <div class='agitation-fill' style={{width: `${agitation()}%`}}/>
         </div>
 
-        <div class='proximity-map'>
-          <For each={allRooms}>
-            {(r) => (
-              <div class='prox-room' classList={{
-                'prox-current':room() === r,
-                'prox-here': roomProximity(r) === 2,
-                'prox-adjacent': roomProximity(r) === 1,
-                'prox-sealed': roomProximity(r) === -1,
-              }}>
-                <div class='prox-dot'/>
-                <span class='prox-label'>{r.slice(0, 3).toUpperCase()}</span>
-              </div>
-            )}
-          </For>
+        <div class='ghost-signal'>
+          SIGNAL · {ghostRoom().toUpperCase()}
+          {banished().includes(ghostRoom()) ? ' · SEALED' : ''}
         </div>
 
         <div class='room' style={{'background-image':`url(${current().img})`}}>
