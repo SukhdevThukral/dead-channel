@@ -44,6 +44,89 @@ button:disabled{
   padding: 24px;
 }
 
+.landing-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.landing-tool-row {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 0.7rem;
+}
+
+.landing-tool-name{
+  color: #aaa;
+  letter-spacing: 0.2em;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.landing-tool-hint {
+  color: #666;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.landing-goal {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: #8b0000;
+  border-left: 2px solid #8b0000;
+  padding-left: 12px;
+  margin-bottom: 28px;
+  line-height: 2;
+}
+
+.proximity-map {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.prox-room {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prox-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #222;
+  border: 1px solid #333;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+
+.prox-label {
+  font-size: 0.45rem;
+  letter-spacing: 0.2em;
+  color: #2a2a2a;
+  transition: color 0.5s;
+}
+
+.prox-current .prox-dot {
+  background: #555; border-color: #777;
+}
+
+.prox-current .prox-label {
+  color: #555;
+}
+
+@keyframes prox-pulse {
+  
+}
+
 .landing-inner {
   display: flex;
   flex-direction: column;
