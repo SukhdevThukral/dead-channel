@@ -1,16 +1,17 @@
 import {For, Show, createEffect} from 'solid-js';
 import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
-import { startEvents } from './events';
+import { startEvents, stopEvents } from './events';
 
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
-  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, emfLevel, eventText, examineText, showGhost, type roomId, type Tool, setExamineText, 
+  scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, emfLevel, eventText, examineText, showGhost, type roomId, type Tool, setExamineText,
+  ghostRoom, 
 } from './state';
 
-import {startAudio, setStatic, updateDrone} from './audio';
+import {startAudio, setStatic, updateDrone, knock} from './audio';
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
 const emf_label = ['', 'QUIET', 'FAINT', 'ACTIVE', 'STRONG', 'PEAK'];
@@ -32,7 +33,7 @@ export default function App(){
   });
 
   createEffect(() => {
-    if (!started) return;
+    if (!started()) return;
     updateDrone(agitation() / 100);
   });
 
@@ -40,10 +41,14 @@ export default function App(){
     if (tool() === 'salt' && saltLeft() > 0) {
       setSaltLeft(saltLeft() - 1);
       setBanished([...banished(), room()]);
+      knock();
+      showExamine('the presence recoils and the room has been sealed.', 3000);
     } else {
       bump(10);
     }
   };
+
+
 
   const toggleVoice=()=> {
     if (voiceOn()) {
@@ -71,7 +76,10 @@ export default function App(){
 
   const revealFlashlight = () => {
     showExamine(current().flashlightReveal,  6000)
-  }
+    bump(7);
+  };
+
+
   return (
     <div class="game" classList={{reduced: reduced()}} style={{'--agitation':agitation() / 100}}>
       <Show when={!started()}>
@@ -197,7 +205,11 @@ export default function App(){
           <div class='event-notification'>{eventText()}</div>
         </Show>
 
-        <div class='hud-room'>{room().toUpperCase()}</div>
+        <div class='hud-room'>
+          {room().toUpperCase()}
+          {banished().includes(room()) ? ' · SEALED' : ''}
+          {ghostRoom() === room() ? ' · PRESENCE DETECTED' : ''}
+        </div>
 
         <div class='toolbar'>
           <For each={TOOLS}>
@@ -214,14 +226,14 @@ export default function App(){
         <div class='jumpscare'/>
         <div class='end lost'>
           <h2>SIGNAL LOST</h2>
-          <button onClick={() => location.reload()}>try again</button>
+          <button onClick={() => { stopEvents(); location.reload()} }>try again</button>
         </div>
       </Show>
 
       <Show when={won() && !scared()}>
         <div class='end'>
           <h2>THE CHANNEL GOES QUIET</h2>
-          <button onClick={() => location.reload()}>play again</button>
+          <button onClick={() => { stopEvents(); location.reload()}}>play again</button>
         </div>
       </Show>
     </div>
