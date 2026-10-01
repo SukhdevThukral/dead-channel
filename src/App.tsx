@@ -171,8 +171,10 @@ export default function App(){
         </Show>
 
         <Show when={tool() === 'flashlight'}>
+          <div class='flashlight-panel'>
+            <img src='/flashlight.png' class='flashlight-img' alt='flash'/>
+          </div>
           <div class='tool-panel'>
-            <img src='/flashlight.png' class='flashlight-img' alt=''/>
             <button class='tool-action-btn' onClick={revealFlashlight}>
               LOOK CAREFULLY
             </button>
