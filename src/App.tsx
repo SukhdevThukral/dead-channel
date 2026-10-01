@@ -156,7 +156,7 @@ export default function App(){
 
         <Show when={tool() === 'emf'}>
           <div class='emf-panel'>
-            <div class='emf-label'>EMF READER</div>
+            <img src='/emf-meter.png' class='emf-device-img' alt=''/>
             <div class='emf-bars'>
               <For each={[1,2,3,4,5]}>
                 {(n) => (
@@ -172,6 +172,7 @@ export default function App(){
 
         <Show when={tool() === 'flashlight'}>
           <div class='tool-panel'>
+            <img src='/flashlight.png' class='flashlight-img' alt=''/>
             <button class='tool-action-btn' onClick={revealFlashlight}>
               LOOK CAREFULLY
             </button>
