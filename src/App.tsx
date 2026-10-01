@@ -13,7 +13,6 @@ import {
 
 import {startAudio, setStatic, updateDrone, knock, winSound} from './audio';
 
-// const allRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
 const emf_label = ['', 'QUIET', 'FAINT', 'ACTIVE', 'STRONG', 'PEAK'];
@@ -28,6 +27,13 @@ export default function App(){
     setStarted(true);
     startEvents();
   };
+
+  createEffect(() => {
+    if (started() && won() && !scared()){
+      winSound();
+      
+    }
+  })
 
   createEffect(() => {
     if (!started()) return;
