@@ -267,7 +267,6 @@ export default function App(){
         <div class='hud-room'>
           {room().toUpperCase()}
           {banished().includes(room()) ? ' · SEALED' : ''}
-          {ghostRoom() === room() ? ' · PRESENCE DETECTED' : ''}
         </div>
 
         <div class='toolbar'>
