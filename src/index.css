@@ -344,6 +344,80 @@ button:disabled{
   border: 1px solid #1a4a1a;
 }
 
+.emf-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  color: #2a7a2a;
+}
+
+.emf-bars {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  height: 44px;
+}
+
+.emf-bar {
+  width: 20px;
+  background: #0f1a0f;
+  border: 1px solid #1a3a1a;
+  transition: background 0.25s, box-shadow 0.25s;
+}
+
+.emf-bar:nth-child(1) {
+  height: 16px;
+}
+
+.emf-bar:nth-child(2) {
+  height: 22px;
+}
+
+.emf-bar:nth-child(3) {
+  height: 30px;
+}
+
+.emf-bar:nth-child(4) {
+  height: 37px;
+}
+
+.emf-bar:nth-child(5) {
+  height: 44px;
+}
+
+.emf-bar.lit {
+  background: #1a6a1a;
+  box-shadow: 0 0 6px #0d0;
+}
+
+.emf-bar.danger {
+  background: #8b0000;
+  box-shadow: 0 0 10px #f00;
+  animation: emf-pulse 0.5s ease-in-out infinite();
+}
+
+@keyframes emf-pulse {
+  0%, 100% {box-shadow: 0 0 6px #f00;}
+  50% {box-shadow: 0 0 18px #f00;}
+}
+
+.emf-reading {
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  color: #2a7a2a;
+  min-height: 1.2em;
+  transition: color 0.3s;
+}
+
+.emf-danger {
+  color: #c22 !important;
+  animation: blink 0.6s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% {opacity: 1;}
+  50% {opacity: 0.2;}
+}
+
 .toolbar {
   height: 56px;
   display: flex;
