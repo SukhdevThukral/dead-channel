@@ -13,14 +13,6 @@ import {
 
 import {startAudio, setStatic, updateDrone, knock, winSound} from './audio';
 
-const hints: Record<Tool, string> = {
-  hand: 'examine the room, text changes as the agitation rises',
-  radio: 'ask it questions or speak aloud with your mic.',
-  emf: 'detects presence - 5 bars meaning it is right here close to you',
-  flashlight: 'reveals hidden details, use look carefully in each room to check',
-  salt: 'not sure abt this yet :( ',
-}
-
 // const allRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
 
 const TOOLS: Tool[] = ['hand', 'radio', 'emf', 'flashlight', 'salt'];
@@ -118,16 +110,6 @@ export default function App(){
               <p class='headphones-note'>
                 › Headphones are strongly recommended.
               </p>
-            </div>
-            <div class='landing-tools'>
-              <For each={TOOLS}>
-                {(t) => (
-                  <div class='landing-tool-row'>
-                    <span class='landing-tool-name'>{t.toUpperCase()}</span>
-                    <span class='landing-tool-hint'>{hints[t]}</span>
-                  </div>
-                )}
-              </For>
             </div>
 
             <div class='landing-goal'>
@@ -235,6 +217,12 @@ export default function App(){
             <button class='tool-action-btn' onClick={examineRoom}>
               EXAMINE ROOM
             </button>
+          </div>
+        </Show>
+
+        <Show when={tool() === 'salt'}>
+          <div class='salt-panel'>
+            <img src='/salt.png' class='salt-img' alt=''/>
           </div>
         </Show>
 
