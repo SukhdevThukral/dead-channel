@@ -1,4 +1,4 @@
-import { room, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId} from './state';
+import { room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId} from './state';
 
 import {creak, knock, heartbeat, burst} from './audio';
 
@@ -51,6 +51,14 @@ export function startEvents() {
     scheduleGhostMove();
     scheduleGhostFlash();
     scheduleHeartbeat();
+
+    every(() => {
+        if (scared() || won()){
+            return;
+        }
+        const inSealed = banished().includes(room());
+        setAgitation(a=> Math.max(0, a - (inSealed ? 3 : 1)));
+    }, 4000);
 
     every(() => {
         if (scared() || won()) {
