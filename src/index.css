@@ -111,7 +111,7 @@ button:disabled{
 .prox-label {
   font-size: 0.45rem;
   letter-spacing: 0.2em;
-  color: #2a2a2a;
+  color: #444;
   transition: color 0.5s;
 }
 
@@ -120,12 +120,43 @@ button:disabled{
 }
 
 .prox-current .prox-label {
-  color: #555;
+  color: #999;
+}
+
+.prox-adjacent .prox-dot {
+  background: #4a3800;
+  border-color: #8b0000;
+  box-shadow: 0 0 4px #8b0000;
+}
+
+.prox-adjacent .prox-label {
+  color: #997700;
+}
+
+.prox-here .prox-dot {
+  background: #8b0000;
+  border-color: #c22; box-shadow: 0 0 8px #c22; animation: prox-pulse 0.8s ease-in-out infinite;
+}
+
+.prox-here .prox-label {
+  color: #ff4444;
+}
+
+.prox-sealed .prox-dot {
+  background: #002a1a; 
+  border-color: #0a4a2a;
+}
+
+.prox-sealed .prox-label {
+  color: #1a6040;
 }
 
 @keyframes prox-pulse {
-  
+  0%, 100% {box-shadow: 0 0 6px #c22;}
+  50% {box-shadow: 0 0 14px #f00;}
 }
+
+.anc
 
 .landing-inner {
   display: flex;
@@ -284,6 +315,11 @@ button:disabled{
 .hotspot.anchor {
   border: 1px solid rgba(255,180,60,0.12) !important;
   animation: anchor-pulse 2.5s ease-in-out infinite;
+}
+
+.anchor-salt {
+  border-color: rgba(255, 200, 60, 0.5) !important;
+  box-shadow:  inset 0 0 24px rgba(255, 200, 40, 0.2);
 }
 
 @keyframes anchor-pulse {
@@ -569,7 +605,7 @@ button:disabled{
   left: 12px;
   font-size: 0.52rem;
   letter-spacing: 0.22em;
-  color: #3a3a3a;
+  color: #666;
   z-index: 10;
   pointer-events: none;
   line-height: 1.8;
