@@ -156,7 +156,9 @@ export default function App(){
 
         <Show when={tool() === 'emf'}>
           <div class='emf-panel'>
-            <img src='/emf-meter.png' class='emf-device-img' alt=''/>
+            <div class='emf-reading' classList={{'emf-danger': emfLevel() >= 4}}>
+              {emf_label[emfLevel()]}
+            </div>
             <div class='emf-bars'>
               <For each={[1,2,3,4,5]}>
                 {(n) => (
@@ -164,9 +166,7 @@ export default function App(){
                   )}
               </For>
             </div>
-            <div class='emf-reading' classList={{'emf-danger': emfLevel() >= 4}}>
-              {emf_label[emfLevel()]}
-            </div>
+            <img src='/emf-meter.png' class='emf-device-img' alt=''/>
           </div>
         </Show>
 
