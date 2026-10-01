@@ -143,3 +143,23 @@ export function updateDrone(agitationRatio: number){
     droneGain.gain.setTargetAtTime(agitationRatio * 0.15, ctx.currentTime, 0.5);
     droneOsc.frequency.setTargetAtTime(55 + agitationRatio *40, ctx.currentTime, 0.5);
 }
+
+// win win
+export function winSound() {
+    if (!ctx) {
+        return;
+    }
+    silence();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(220, ctx.currentTime);
+    o.frequency.linearRampToValueAtTime(110, ctx.currentTime + 3);
+
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0, ctx.currentTime + 3);
+
+    o.connect(g).connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime + 3);
+}
