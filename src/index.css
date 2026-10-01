@@ -243,8 +243,25 @@ button:disabled{
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 8;
+  background: radial-gradient(circle 200px at 50% 45%, transparent 0%, rgba(0,0,0,1) 100%);
+  animation: fl-flicker 3s infinite;
+}
+
+@keyframes fl-flicker {
+  0%, 87% {opacity: 1;}
+  88% {opacity: 0.25;}
+  89% {opacity: 1;}
+  94% {opacity: 0.55;}
+  95% {opacity: 1;}
+}
+
+.ghost-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   z-index: 9;
-  background: rgba(150, 150, 170, 0.06) url('/ghost.png') center / 50% no-repeat;
+  background: rgba(150,150,170,0.06) url('/ghost.png') center / 50% no-repeat;
   animation: ghost-appear 0.35s ease-out forwards;
 }
 
@@ -294,7 +311,7 @@ button:disabled{
   padding: 8px;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
-  transition: border-color 0.15s color 0.15s;
+  transition: border-color 0.15s, color 0.15s;
 }
 
 .radio-buttons button:not(:disabled):hover {
@@ -392,7 +409,7 @@ button:disabled{
 .emf-bar.danger {
   background: #8b0000;
   box-shadow: 0 0 10px #f00;
-  animation: emf-pulse 0.5s ease-in-out infinite();
+  animation: emf-pulse 0.5s ease-in-out infinite;
 }
 
 @keyframes emf-pulse {
@@ -434,7 +451,7 @@ button:disabled{
   letter-spacing: 0.15rem;
   font-size: 0.8rem;
   font-family: 'Courier New', monospace;
-  transition: border-color 0.2s, color 0.2;
+  transition: border-color 0.2s, color 0.2s;
 }
 
 .tool-action-btn:hover{
