@@ -39,13 +39,7 @@ export default function App(){
     if (!started()) return;
     setStatic(tool() === 'radio' ? 0.02 + level() * 0.02 : 0);
   });
-
-  createEffect(() => {
-    if (won() && !scared()) {
-      winSound();
-    }
-  });
-
+  
   createEffect(() => {
     if (!started()) return;
     updateDrone(agitation() / 100);
