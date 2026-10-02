@@ -44,6 +44,20 @@ button:disabled{
   padding: 24px;
 }
 
+.landing-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.landing-logo{
+  width: 180px;
+  height: auto;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
 .landing-goal {
   font-size: 0.73rem;
   letter-spacing: 0.1em;
@@ -63,19 +77,22 @@ button:disabled{
 }
 
 .landing-tag {
-  font-size: 0.6rem;
-  letter-spacing: 0.25em;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
   color: #a3a2a2;
-  margin-bottom: 12px;
+  margin-bottom: -50px;
+  margin-left: 10px;
 }
 
 .landing-title{
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   font-size: clamp(3.5rem, 12vw, 6.5rem);
-  font-weight: bold;
+  font-weight: 600;
   color: #fff;
-  line-height: 0.95;
-  margin: 0 0 20px;
-  letter-spacing: 0.04em !important; 
+  line-height: 0.65;
+  letter-spacing: 0.04em; 
 }
 
 .weakened-notice{
@@ -502,6 +519,12 @@ button:disabled{
   z-index: 15;
 }
 
+.title-dead-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .tool-action-btn {
   background: transparent;
   border: 1px solid #555;
@@ -632,6 +655,7 @@ button:disabled{
   pointer-events: none;
   animation: bw-flash 1.2s ease-out forwards;
 }
+
 
 @keyframes bw-flash {
   0% {background: #fff;}

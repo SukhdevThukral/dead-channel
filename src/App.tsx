@@ -110,8 +110,14 @@ export default function App(){
       <Show when={!started()}>
         <div class='landing'>
           <div class='landing-inner'>
+            
             <div class='landing-tag'> · FIELD INVESTIGATION KIT</div>
-            <h1 class='landing-title'>DEAD<br/>CHANNEL</h1>
+            <h1 class='landing-title'>
+              <span class='title-dead-row'>
+                <img src='/logo.png' class='landing-logo' alt=''/>
+                DEAD
+              </span> <span class='title-channel'>CHANNEL</span>
+            </h1>
             <div class='landing-divider'/>
             <div class='landing-cw'>
               <span class='cw-label'>⚠⚠ CONTENT WARNING </span>
