@@ -177,7 +177,7 @@ button:disabled{
   background-repeat: no-repeat;
   background-position: center;
   background-color: #0a0a0a;
-  filter: brightness(calc(1 - var(--agitation) * 0.5)) contrast(calc(1 + var(--agitation) *0.3));
+  filter: brightness(calc(0.5 - var(--agitation) * 0.3)) contrast(calc(1 + var(--agitation) *0.3));
   transition: filter 1s;
   animation: flicker 4s infinite;
 }
@@ -254,8 +254,9 @@ button:disabled{
   inset: 0;
   pointer-events: none;
   z-index: 8;
-  background: radial-gradient(circle 200px at 50% 45%, transparent 0%, rgba(0,0,0,1) 100%);
+  background: radial-gradient(circle 280px at 50% 50%, rgba(255,255,210,0.7) 0%, rgba(255,255,180,0.3) 30%, transparent 65%);
   animation: fl-flicker 3s infinite;
+  mix-blend-mode: screen;
 }
 
 @keyframes fl-flicker {
@@ -410,6 +411,12 @@ button:disabled{
   background: #0f1a0f;
   border: 1px solid #1a3a1a;
   transition: background 0.25s, box-shadow 0.25s;
+}
+
+.flashilight-active {
+  filter: brightness(0.3) !important;
+  animation: none  !important;
+  transition: filter 0.2s !important;
 }
 
 .emf-bar:nth-child(1) {
