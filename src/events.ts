@@ -1,4 +1,4 @@
-import {setDoorsLocked, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId,} from './state';
+import {setDoorsLocked, ghostWeakened, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId,} from './state';
 
 import {creak, knock, heartbeat, burst} from './audio';
 
@@ -76,6 +76,29 @@ function scheduleLightsOut() {
     }, 30000 + Math.random() * 25000);
 }
 
+function scheduleGhostMove() {
+    later(() => {
+        if (scared() || won()){
+            return;
+        }
+        if (!ghostWeakened()) {
+            const current = ghostRoom();
+            const opts = ADJACENT[current].filter(r => !banished().includes(r));
+            if (opts.length) {
+                const next = opts[Math.floor(Math.random() * opts.length)] as roomId;
+                setGhostRoom(next);
+                if (next === room()) {
+                    setEventText('a cold presence enters the room...')
+                    bump(15);
+                    creak();
+                    later(() => setEventText(''), 3000);
+                }
+            }
+        }
+        scheduleGhostMove();
+    }, 20000 + Math.random() * 25000);
+}
+
 function scheduleFakeout() {
     later(() => {
         if (scared() || won()){
@@ -128,7 +151,7 @@ export function startEvents() {
         if (scared() || won()){
             return;
         }
-        if (ghostRoom() === room()) {
+        if (ghostRoom() === room() && !ghostWeakened()) {
             bump(2);
         }
     }, 5000);
@@ -163,27 +186,6 @@ function scheduleRandomEvent() {
         later(() => setEventText(''), 3500);
         scheduleRandomEvent();
     }, 12000 + Math.random() * 20000);
-}
-
-function scheduleGhostMove() {
-    later(() => {
-        if (scared() || won()) {
-            return;
-        }
-        const current = ghostRoom();
-        const opts = ADJACENT[current].filter(r => !banished().includes(r));
-        if (opts.length) {
-            const next = opts[Math.floor(Math.random() * opts.length)] as roomId;
-            setGhostRoom(next);
-            if (next === room()) {
-                setEventText('a cold presence enters the room...')
-                bump(15);
-                creak();
-                later(() => setEventText(''), 3000);
-            }
-        }
-        scheduleGhostMove();
-    }, 20000 + Math.random() * 25000);
 }
 
 function scheduleGhostFlash() {
