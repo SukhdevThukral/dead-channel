@@ -606,20 +606,38 @@ button:disabled{
 .jumpscare {
   position: fixed;
   inset: 0;
-  background: #000 url('/ghost.png') center / contain no-repeat;
+  background: #fff url('/ghost.png') center / contain no-repeat;
   z-index: 100; 
-  animation: scare 1.8s ease-out forwards;
+  animation: scare 2s ease-out forwards;
 }
 
 @keyframes scare {
-  0% {opacity: 1; transform: scale(1);}
-  30% {opacity: 1; transform: scale(1.05);}
-  100% {opacity: 0; transform: scale(1.1);}
+  0% {opacity: 1; background-color: #fff; transform: scale(1.1);}
+  8% {opacity: 1; background-color: #000;}
+  16% {opacity: 1; background-color: #fff; transform: scale(1.15);}
+  24% {opacity: 1; background-color: #000;}
+  32% {opacity: 1; background-color: #fff; transform: scale(1.2);}
+  40% {opacity: 1; background-color: #000; transform: scale(1.1);}
+  60% {opacity: 1; background-color: #000;}
+  100% {opacity: 0; transform: scale(1.15);}
 }
 
 .reduced .jumpscare {
   animation: none;
   opacity: 0;
+}
+
+.pre-scare .room {
+  animation: glitch-tear 0.3s infinite !important;
+}
+
+@keyframes glitch-tear {
+  0% {transform: translate(0);}
+  20% {transform: translate(-4px, 2px) skewX(1deg);}
+  40% {transform: translate(4px, -2px) skewX(-1deg);}
+  60% {transform: translate(-2px, 0) skewX(0.5deg);}
+  80% {transform: translate(2px, 1px);}
+  100% {transform: translate(0);}
 }
 
 @keyframes flicker {
