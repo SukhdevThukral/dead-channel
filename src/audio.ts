@@ -6,6 +6,34 @@ let muted = false;
 let droneOsc: OscillatorNode | undefined;
 let droneGain: GainNode | undefined;
 
+let ambientSource: AudioBufferSourceNode | undefined;
+
+export async function startAmbient() {
+    if (!ctx || muted) {
+        return;
+    }
+
+    const res = await fetch('/ambient_music.mp3');
+    const arrayBuf = await res.arrayBuffer();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf);
+
+    const g = ctx.createGain();
+    g.gain.value = 0.2;
+
+    ambientSource = ctx.createBufferSource();
+    ambientSource.buffer = audioBuf;
+
+    ambientSource.loop = true;
+    ambientSource.connect(g).connect(ctx.destination);
+
+    ambientSource.start();
+}
+
+export function stopAmbient() {
+    ambientSource?.stop();
+    ambientSource = undefined;
+}
+
 export function startDrone() {
     if (!ctx || droneOsc) return;
     droneOsc = ctx.createOscillator();
@@ -43,6 +71,7 @@ export function startAudio(){
     loop.start();
 
     startDrone();
+    startAmbient();
 }
 
 export function setStatic(volume: number){
