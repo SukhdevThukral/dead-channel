@@ -1,5 +1,6 @@
 import {level, bump, busy, setBusy,setRadioLine} from './state';
 import { burst } from './audio';
+import { setGhostWeakened } from './state';
 
 export type Question = 'here' | 'name' | 'want';
 
@@ -68,6 +69,10 @@ export async function ask(q: Question) {
     await sleep(reply.split(' ').length * 800 + 1000);
     resumeRecognition();
 
+
+    setGhostWeakened(true);
+    setTimeout(() => setGhostWeakened(false), 8000);
+    
     setBusy(false);
 }
 
