@@ -4,6 +4,9 @@ import {silence, sting} from './audio';
 export type roomId = 'hallway' | 'bedroom' | 'basement';
 export type Tool = 'hand' | 'radio' | 'emf' | 'flashlight' | 'salt';
 
+const startRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
+
+export const [ghostWeakened, setGhostWeakened] = createSignal(false);
 export const [ started, setStarted ] = createSignal(false);
 export const [ reduced, setReduced] = createSignal(false);
 export const [ room, setRoom] = createSignal<roomId>('hallway');
@@ -17,7 +20,9 @@ export const [busy, setBusy] = createSignal(false);
 export const [voiceOn, setVoiceOn] = createSignal(false);
 export const [voiceDenied, setVoiceDenied] = createSignal(false);
 
-export const [ghostRoom, setGhostRoom] = createSignal<roomId>('bedroom');
+export const [ghostRoom, setGhostRoom] = createSignal<roomId>(
+    startRooms[Math.floor(Math.random() * startRooms.length)]
+);
 export const [emfLevel,setEmfLevel] = createSignal(1);
 export const [eventText, setEventText] = createSignal('');
 export const [examineText, setExamineText] = createSignal('');
@@ -32,6 +37,7 @@ export const level = () => {
     const a = agitation();
     return a < 25 ? 0 : a <50?1:a <75 ? 2 :3;
 };
+
 
 let scareQueued = false;
 
