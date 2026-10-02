@@ -39,7 +39,12 @@ function pauseRecognition(){
 }
 
 function resumeRecognition(){
-    if (recognition) recognition.start();
+    if (recognition){
+        try {
+            recognition.start();
+        } catch {
+        }
+    }
 }
 
 export async function ask(q: Question) {
@@ -72,7 +77,7 @@ export async function ask(q: Question) {
 
     setGhostWeakened(true);
     setTimeout(() => setGhostWeakened(false), 8000);
-    
+
     setBusy(false);
 }
 
@@ -124,10 +129,15 @@ export function startVoice(onDenied: () => void) {
         };
 
         recognition.onend = () => {
-            if (recognition){
+            if (!recognition){
                 return;
             };
-            if (!busy()) recognition.start();
+            if (!busy()) {
+                try {
+                    recognition.start();
+                } catch {
+                }
+            };
         }
 
         recognition.onerror = (e:any) => {

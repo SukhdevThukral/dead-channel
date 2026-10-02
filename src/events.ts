@@ -1,4 +1,4 @@
-import {setDoorsLocked, ghostWeakened, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId,} from './state';
+import {setDoorsLocked, ghostWeakened, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, won, setShowGhost, type roomId, gameOver,} from './state';
 
 import {creak, knock, heartbeat, burst} from './audio';
 
@@ -32,6 +32,13 @@ const EVENTS: GameEvent[] = [
 let timeouts: number[] = [];
 let intervals: number[] = [];
 
+let evTimer: number | undefined;
+function flash(text: string, ms: number) {
+    clearTimeout(evTimer);
+    setEventText(text);
+    evTimer = window.setTimeout(() => setEventText(''), ms);
+}
+
 function later(fn: () => void, ms: number) {
     timeouts.push(window.setTimeout(fn, ms));
 }
@@ -42,17 +49,16 @@ function every(fn: () => void, ms: number) {
 
 function scheduleDoorLock() {
     later(() => {
-        if (scared() || won()){
+        if (gameOver() || won()){
             return;
         }
         if (agitation() > 40){
             setDoorsLocked(true);
-            setEventText("the doors won't move.");
+            flash("the doors won't move.", 6000 + Math.random() * 4000);
             burst(0.3, 200);
-            later(() => {
-                setDoorsLocked(false);
-                setEventText('');
-            }, 6000 + Math.random() * 4000);
+            later(() => 
+                setDoorsLocked(false), 6000 + Math.random() *4000
+            );
         }
         scheduleDoorLock()
     }, 25000 + Math.random() * 20000);
@@ -60,17 +66,15 @@ function scheduleDoorLock() {
 
 function scheduleLightsOut() {
     later(() => {
-        if (scared() || won()) {
+        if (gameOver() || won()) {
             return;
         }
         if (agitation() > 55) {
             setLightsOut(true);
-            setEventText('power failure');
+            flash('power failure', 4000 + Math.random() * 3000);
             burst(0.2, 150);
-            later(() => {
-                setLightsOut(false);
-                setEventText('');
-            }, 4000 + Math.random() * 3000);
+            later(() => 
+                setLightsOut(false), 4000 + Math.random() * 3000);
         }
         scheduleLightsOut();
     }, 30000 + Math.random() * 25000);
@@ -78,7 +82,7 @@ function scheduleLightsOut() {
 
 function scheduleGhostMove() {
     later(() => {
-        if (scared() || won()){
+        if (gameOver() || won()){
             return;
         }
         if (!ghostWeakened()) {
@@ -88,10 +92,9 @@ function scheduleGhostMove() {
                 const next = opts[Math.floor(Math.random() * opts.length)] as roomId;
                 setGhostRoom(next);
                 if (next === room()) {
-                    setEventText('a cold presence enters the room...')
+                    flash('a cold presence enters the room...', 3000);
                     bump(15);
                     creak();
-                    later(() => setEventText(''), 3000);
                 }
             }
         }
@@ -101,7 +104,7 @@ function scheduleGhostMove() {
 
 function scheduleFakeout() {
     later(() => {
-        if (scared() || won()){
+        if (gameOver() || won()){
             return;
         }
         if (agitation() > 60) {
@@ -130,7 +133,7 @@ export function startEvents() {
     scheduleFakeout();
 
     every(() => {
-        if (scared() || won()){
+        if (gameOver() || won()){
             return;
         }
         const inSealed = banished().includes(room());
@@ -138,7 +141,7 @@ export function startEvents() {
     }, 4000);
 
     every(() => {
-        if (scared() || won()) {
+        if (gameOver() || won()) {
             return;
         }
         const g = ghostRoom(), p = room();
@@ -148,7 +151,7 @@ export function startEvents() {
     }, 1800);
 
     every(() => {
-        if (scared() || won()){
+        if (gameOver() || won()){
             return;
         }
         if (ghostRoom() === room() && !ghostWeakened()) {
@@ -169,11 +172,11 @@ export function stopEvents(){
 
 function scheduleRandomEvent() {
     later(() => {
-        if (scared() || won()) {
+        if (gameOver() || won()) {
             return;
         }
-        const eve = EVENTS[Math.floor(Math.random() * EVENTS.length)];
 
+        const eve = EVENTS[Math.floor(Math.random() * EVENTS.length)];
         setEventText(eve.text);
         bump(eve.bumpVal);
         if (eve.sound === 'creak') {
@@ -190,7 +193,7 @@ function scheduleRandomEvent() {
 
 function scheduleGhostFlash() {
     later(() => {
-        if (scared() || won()) {
+        if (gameOver() || won()) {
             return;
         }
         if (ghostRoom() === room() && agitation() > 30){
@@ -203,7 +206,7 @@ function scheduleGhostFlash() {
 }
 
 function scheduleHeartbeat() {
-    if (scared() || won()){
+    if (gameOver() || won()){
         return;
     }
     const a = agitation();

@@ -42,6 +42,7 @@ button:disabled{
   align-items: center;
   justify-content: center;
   padding: 24px;
+  overflow-y: auto;
 }
 
 .landing-title-row {
@@ -96,7 +97,7 @@ button:disabled{
 }
 
 .weakened-notice{
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translateX(-50%);
@@ -256,7 +257,7 @@ button:disabled{
 }
 
 .anchor-hint {
-  position: absolute;
+  position: fixed;
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
@@ -807,3 +808,16 @@ button:disabled{
   90% {filter: drop-shadow(0 0 4px rgba(255,220,80,0.15));}
   95% {filter: drop-shadow(0 0 12px rgba(255, 220, 80, 0.7));}
 }
+
+.hand-panel, .salt-panel, .emf-panel, .flashlight-panel {
+  pointer-events: none;
+}
+
+.reduced.pre-scare .room {
+  animation: none !important;
+}
+
+.reduced .scare-flash {
+  display: none;
+}
+

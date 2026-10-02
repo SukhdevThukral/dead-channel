@@ -6,6 +6,7 @@ export type Tool = 'hand' | 'radio' | 'emf' | 'flashlight' | 'salt';
 
 const startRooms: roomId[] = ['hallway', 'bedroom', 'basement'];
 
+
 export const [ghostWeakened, setGhostWeakened] = createSignal(false);
 export const [ started, setStarted ] = createSignal(false);
 export const [ reduced, setReduced] = createSignal(false);
@@ -31,7 +32,8 @@ export const [showGhost, setShowGhost] = createSignal(false);
 export const [doorsLocked, setDoorsLocked] = createSignal(false);
 export const [lightsOut, setLightsOut] = createSignal(false);
 
-export const won = () => banished().length >= 2;
+export const [gameOver, setGameOver] = createSignal(false);
+export const won = () => !gameOver() && banished().length >= 2;
 
 export const level = () => {
     const a = agitation();
@@ -39,20 +41,24 @@ export const level = () => {
 };
 
 
-let scareQueued = false;
-
 export function bump(n:number) {
-    if (won()) return;
+    if (won() ||gameOver()) return;
     setAgitation((a) => Math.min(100, a + n));
-    if (agitation() >= 100 && !scareQueued) {
-        scareQueued = true;
+    if (agitation() >= 100) {
+        setGameOver(true);
         silence();
+        window.speechSynthesis.cancel();
+
+        if (reduced()) {
+            setScared(true);
+            sting();
+            return;
+        }
 
         let flashes = 0;
         const glitch = setInterval(() => {
             setScared(flashes%2 === 0);
-            flashes++
-            if (flashes >= 10) {
+            if (++flashes >= 10) {
                 clearInterval(glitch);
                 setScared(false);
                 setTimeout(() => {

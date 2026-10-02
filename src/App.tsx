@@ -3,13 +3,13 @@ import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
 import { startEvents, stopEvents } from './events';
 
-import { doorsLocked, lightsOut, ghostWeakened } from './state';
+import { doorsLocked, lightsOut, ghostWeakened, setGhostWeakened } from './state';
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
   agitation, level, bump, banished, setBanished, saltLeft, setSaltLeft, 
   scared, won, radioLine, busy, voiceOn, setVoiceOn, voiceDenied, setVoiceDenied, emfLevel, eventText, examineText, showGhost, type roomId, type Tool, setExamineText, ghostRoom,
-  setAgitation, 
+  setAgitation, gameOver
 } from './state';
 
 import {startAudio, setStatic, updateDrone, knock, winSound} from './audio';
@@ -32,9 +32,8 @@ export default function App(){
   createEffect(() => {
     if (started() && won() && !scared()){
       winSound();
-      
     }
-  })
+  });
 
   createEffect(() => {
     if (!started()) return;
@@ -46,7 +45,18 @@ export default function App(){
     updateDrone(agitation() / 100);
   });
 
+  createEffect(() => {
+    if (tool() !== 'radio' && voiceOn()){
+      stopVoice();
+      setVoiceOn(false);
+    }
+  });
+
   const useAnchor = () => {
+    if (gameOver()) {
+      return;
+    }
+
     if (tool() !== 'salt') {
       bump(10);
       return;
@@ -54,6 +64,7 @@ export default function App(){
     
     if (saltLeft() <= 0){
       showExamine('no salt remaining.', 2000);
+      return;
     }
 
     if (!ghostWeakened()){
@@ -62,6 +73,7 @@ export default function App(){
     }
 
     if (ghostRoom() !== room()){
+      setSaltLeft(s=> s-1)
       showExamine('the presence is not here. you need to find it first', 2500);
       bump(5);
       return;
@@ -69,6 +81,7 @@ export default function App(){
 
     setSaltLeft(saltLeft() - 1);
     setBanished([...banished(), room()]);
+    setGhostWeakened(false);
     setAgitation(a => Math.max(0, a - 20));
 
     knock();
@@ -159,19 +172,20 @@ export default function App(){
           {banished().includes(ghostRoom()) ? ' · SEALED' : ''}
         </div>
 
+        <Show when={ghostWeakened()}>
+          <div class='weakened-notice'>▸ SIGNAL DISRUPTED - PLACE SALT NOW.</div>
+        </Show>
+
+        <Show when={tool() === 'salt' && current().anchor && !banished().includes(room())}>
+          <div class='anchor-hint'>
+            USE SALT HERE: {current().anchor!.name.toUpperCase()}
+          </div>
+        </Show>
+
         <div class='room' classList={{'lights-out' : lightsOut(), 'flashlight-active' : tool() === 'flashlight'}} style={{'background-image':`url(${current().img})`}}>
+          
           <Show when={showGhost()}>
             <div class='ghost-flash'/>
-          </Show>
-
-          <Show when={ghostWeakened()}>
-            <div class='weakened-notice'>▸ SIGNAL DISRUPTED - PLACE SALT NOW.</div>
-          </Show>
-
-          <Show when={tool() === 'salt' && current().anchor && !banished().includes(room())}>
-            <div class='anchor-hint'>
-              USE SALT HERE: {current().anchor!.name.toUpperCase()}
-            </div>
           </Show>
 
           <For each={Object.entries(current().exits)}>
