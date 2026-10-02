@@ -15,6 +15,7 @@ export const ROOMS: Record<roomId, Room> = {
         img: '/rooms/hallway.png',
         exits: {
             bedroom :{x: 38, y: 30, w: 24, h: 45},
+            basement : {x: 5, y: 40, w: 15, h: 45},
             
         },anchor: {name: 'barred door', spot:{x:3, y :20, w:12, h:55}},
         examine: [
