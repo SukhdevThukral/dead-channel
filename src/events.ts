@@ -1,4 +1,4 @@
-import {doorsLocked, setDoorsLocked, lightsOut, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId, setExamineText} from './state';
+import {setDoorsLocked, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId,} from './state';
 
 import {creak, knock, heartbeat, burst} from './audio';
 
@@ -59,7 +59,36 @@ function scheduleDoorLock() {
 }
 
 function scheduleLightsOut() {
-    
+    later(() => {
+        if (scared() || won()) {
+            return;
+        }
+        if (agitation() > 55) {
+            setLightsOut(true);
+            setEventText('power failure');
+            burst(0.2, 150);
+            later(() => {
+                setLightsOut(false);
+                setEventText('');
+            }, 4000 + Math.random() * 3000);
+        }
+        scheduleLightsOut();
+    }, 30000 + Math.random() * 25000);
+}
+
+function scheduleFakeout() {
+    later(() => {
+        if (scared() || won()){
+            return;
+        }
+        if (agitation() > 60) {
+            setShowGhost(true);
+            burst(0.4, 80);
+            bump(5);
+            later(() => setShowGhost(false), 100);
+        }
+        scheduleFakeout();
+    }, 15000 + Math.random() * 15000)
 }
 
 export function startEvents() {
@@ -73,6 +102,9 @@ export function startEvents() {
     scheduleGhostMove();
     scheduleGhostFlash();
     scheduleHeartbeat();
+    scheduleDoorLock();
+    scheduleLightsOut();
+    scheduleFakeout();
 
     every(() => {
         if (scared() || won()){
