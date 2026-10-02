@@ -45,7 +45,21 @@ function scheduleDoorLock() {
         if (scared() || won()){
             return;
         }
-    })
+        if (agitation() > 40){
+            setDoorsLocked(true);
+            setEventText("the doors won't move.");
+            burst(0.3, 200);
+            later(() => {
+                setDoorsLocked(false);
+                setEventText('');
+            }, 6000 + Math.random() * 4000);
+        }
+        scheduleDoorLock()
+    }, 25000 + Math.random() * 20000);
+}
+
+function scheduleLightsOut() {
+    
 }
 
 export function startEvents() {
