@@ -52,7 +52,7 @@ export async function ask(q: Question) {
     setBusy(true);
     window.speechSynthesis.cancel();
 
-    bump(last === q ? 12:6);
+    bump(last === q ? 12 : 6);
     last = q;
 
     setRadioLine('');
@@ -61,41 +61,48 @@ export async function ask(q: Question) {
 
     const pool = REPLIES[q][level()];
     const reply = pool[Math.floor(Math.random() * pool.length)];
+    const words = reply.split(' ');
 
     pauseRecognition();
 
-    for (const word of reply.split(' ')){
-        await sleep(400 + Math.random()*350);
+    await new Promise<void>((resolve)=>{
+        let i = 0;
+        const next = () => {
+            if (i >= words.length){ 
+                resolve(); 
+                return; 
+            }
+            const word = words[i++];
+            setRadioLine((line) => (line ? line + ' ' : '') + word);
+
+            const u = speakWord(word);
+            u.onend   = () => { burst(0.04, 60); setTimeout(next, 200 + Math.random() * 200); };
+            u.onerror = () => setTimeout(next, 400);
+        };
         burst(0.04, 60);
-        speak(word);
-        setRadioLine((line) => (line ? line + ' ' : '') + word);
-    }
+        next();
+    });
 
-    await sleep(reply.split(' ').length * 800 + 1000);
     resumeRecognition();
-
-
     setGhostWeakened(true);
     setTimeout(() => setGhostWeakened(false), 8000);
-
     setBusy(false);
 }
 
 
-function speak(word: string) {
-    window.speechSynthesis.cancel();
-
+function speakWord(word: string): SpeechSynthesisUtterance {
     const voices = window.speechSynthesis.getVoices();
-    const u = new SpeechSynthesisUtterance(word);
-
-    const voice = voices.find(v => v.name === 'Google UK English Male') ?? voices.find(v => v.name.toLowerCase().includes('david'));
-    if (voice) u.voice = voice;
-
+    const u  = new SpeechSynthesisUtterance(word);
+    const voice = 
+        voices.find(v=> v.name === 'Google UK English Male') ?? voices.find(v=> v.name.toLowerCase().includes('david'));
+    if (voice) {
+        u.voice = voice;
+    }
     u.rate = 0.4;
     u.pitch = 0;
     u.volume = 1;
-
     window.speechSynthesis.speak(u);
+    return u;
 }
 
 let recognition: any = null;
