@@ -143,10 +143,6 @@ export default function App(){
         </div>
 
         <div class='room' classList={{'lights-out' : lightsOut(), 'flashlight-active' : tool() === 'flashlight'}} style={{'background-image':`url(${current().img})`}}>
-          <Show when={tool() === 'flashlight'}>
-            <div class='flashlight-overlay'/>
-          </Show>
-
           <Show when={showGhost()}>
             <div class='ghost-flash'/>
           </Show>
