@@ -23,6 +23,9 @@ export const [eventText, setEventText] = createSignal('');
 export const [examineText, setExamineText] = createSignal('');
 export const [showGhost, setShowGhost] = createSignal(false);
 
+export const [doorsLocked, setDoorsLocked] = createSignal(false);
+export const [lightsOut, setLightsOut] = createSignal(false);
+
 export const won = () => banished().length >= 2;
 
 export const level = () => {
