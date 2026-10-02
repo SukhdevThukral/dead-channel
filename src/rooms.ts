@@ -14,71 +14,71 @@ export const ROOMS: Record<roomId, Room> = {
     hallway: {
         img: '/rooms/hallway.png',
         exits: {
-            bedroom :{x: 10, y: 30, w: 16, h: 45},
-            basement: {x: 75, y:35, w:16, h:45},
-        },
+            bedroom :{x: 38, y: 30, w: 24, h: 45},
+            
+        },anchor: {name: 'barred door', spot:{x:3, y :20, w:12, h:55}},
         examine: [
             [
-                'the wallpaer is yellow and peeling',
-                'dusty floorboards. nobody has been here in years',
-                'a coat hangs by the door. a guest, long gone.'
+                'a long corridor, fluorescent light hums overhead.',
+                'barred doors line the left wall. all of them locked.',
+                'something at the far end. probably nothing (hopefully)'
             ],
             [
-                'the wallpaper moves faintly. theres no draft.',
-                'fresh scratch marks run along the floorboards.',
-                'the coat is facing the wrong way.',
+                'the light flickers. for a second',
+                'one of the barred doors is slightly open now.',
+                'the shadow at the end of the corridor has not moved yet.',
             ],
             [
-                '"HELP" scratched into the baseboard. tiny, desperate letters.',
-                'the scratch marks lead toward the basement door.',
-                'something wet drips from the coat sleeve.',
+                'the light burns brighter than it should.',
+                'scratch marks are on the inside of the bars. from inside.',
+                'the shadow at the end is closer.. you did not see it move at all.',
             ],
             [
-                'your name is on the wall. you never told it to anyone here.',
-                'the scratch marks are still being made. nothing is making them.',
-                'the coat hooks are all bent outward, away from the wall.',
+                'the light dies for a moment. something breathes nearby.',
+                'all the bars are open now. you closed them.',
+                'the shadow is right behind you. do not turn around.',
             ]
         ],
-        flashlightReveal: "Behind the wallpaper: a child's drawing of a family. one figure has been scratched out entirely.",
+        flashlightReveal: "the beam catches something on the far wall. written in what looks like rust: ONE OF US NEVER LEFT..",
     },
 
     bedroom: {
         img: '/rooms/bedroom.png',
-        exits: {hallway: {x:42, y:60, w:16, h:35}},
-        anchor: { name: 'doll', spot: { x: 60, y: 55, w: 10, h: 18 }},
+        exits: {hallway: {x:82, y:15, w:14, h:75}},
+        anchor: { name: 'window', spot: { x: 30, y: 8, w: 38, h: 50 }},
         examine: [
             [
-                'a single bed, unmade. dust on every surface.',
-                ' a porcelain doll sits on the dresser, facing the door.',
-                'the mirror above the dresser is cracked.',
+                'an empty bed. sheets been twisted like someone left in a hurry',
+                'a clock on the wall. it has stopped at 3:16',
+                'curtains moving against a closed window..',
             ],
             [
-                'the doll has moved since you entered. you did not touch it.',
-                "the mirror shows a room that isnt this one.",
-                'child-sized footprints in the dust lead to the bed',
+                'the bed has an impression in it. looks fresh.',
+                "the clock has started ticking again. but backwards",
+                'something is behind the curtains. a shape.',
             ],
             [
-                'the doll is facing you now. you were not looking.',
-                'something in the mirror moves when you stand still.',
-                'the footprints are fresh. still pressing into the dust',
+                'the sheets seem warm. someone was probably just here',
+                'the clock reads 3:14 again. it never left apparently..',
+                'the shape behind the curtain has not moved at all. it seems to wait.',
             ],
             [
-                'the doll blinks',
-                'your reflection in the mirror smiles... you did not..',
-                'the footprints are wet. Small. Slow.',
+                'there is a second impression in the best. almost your size.',
+                'the clock falls off the wall. the hands keep moving.',
+                'the curtain pulls back on its own. nothing is there. nothing is visible.',
             ],
         ],
-        flashlightReveal: "under the bed: a journal. last entry dated the night of the incident. the final page reads only: SHE KNOWS..",
+        flashlightReveal: "the light finds the clock face. behind the glass, a note: YOU HAVE BEEN HERE BEFORE.",
     },
 
     basement: {
         img: '/rooms/basement.png',
-        exits: {hallway: {x:42, y:5, w:16, h:25}},
-        anchor: {name: 'music box', spot: {x:30, y:65, w:10, h:12}},
+        exits: {hallway: {x:8, y:5, w:22, h:55}},
+        anchor: {name: 'cage', spot: {x:38, y:25, w:22, h:50}},
         examine: [
             [
-                'stone walls, damp. a strong smell of decay.',
-                'old pipes running along the ceiling, leaving rust..',
+                'wooden stairs descent into dark. pipes cross the ceiling.',
+                'a cage structure in the cnter. door hanging open..',
                 'a jukebox sits on a shelf, lid closed.',
             ],
             [
