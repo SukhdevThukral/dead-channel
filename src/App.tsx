@@ -106,7 +106,7 @@ export default function App(){
 
 
   return (
-    <div class="game" classList={{reduced: reduced()}} style={{'--agitation':agitation() / 100}}>
+    <div class="game" classList={{reduced: reduced(), 'pre-scare' : agitation() >= 90}} style={{'--agitation':agitation() / 100}}>
       <Show when={!started()}>
         <div class='landing'>
           <div class='landing-inner'>
@@ -125,7 +125,7 @@ export default function App(){
             </div>
 
             <div class='landing-goal'>
-              YOUR GOAL is to banish the presence from 2 rooms before the agitation of the 'creature' reaches 100.
+              YOUR GOAL is to banish the presence from 2 rooms before the agitation of the creature reaches 100.
             </div>
 
             <div class='landing-buttons'>
@@ -159,7 +159,7 @@ export default function App(){
           </Show>
 
           <Show when={ghostWeakened()}>
-            <div class='weakened-notice'>▸ SIGNAL DISTRUPTED - PLACE SALT NOW.</div>
+            <div class='weakened-notice'>▸ SIGNAL DISRUPTED - PLACE SALT NOW.</div>
           </Show>
 
           <Show when={tool() === 'salt' && current().anchor && !banished().includes(room())}>
@@ -269,6 +269,7 @@ export default function App(){
       </Show>
 
       <Show when={scared()}>
+        <div class='scare-flash'/>
         <div class='jumpscare'/>
         <div class='end lost'>
           <h2>SIGNAL LOST</h2>
