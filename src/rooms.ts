@@ -79,24 +79,24 @@ export const ROOMS: Record<roomId, Room> = {
             [
                 'wooden stairs descent into dark. pipes cross the ceiling.',
                 'a cage structure in the cnter. door hanging open..',
-                'a jukebox sits on a shelf, lid closed.',
+                'shelves along the far wall. jars of something dark.',
             ],
             [
-                'the music box is playing. you did not start it.',
-                'water drips upward along the pipes',
-                'something has been digging in the far corner.',
+                'the cage door is closing now. you did not close it.',
+                'the pipes knock once. then silence.',
+                'one of the jars has fallen. the liquid does not spread.',
             ],
             [
-                'the music box plays faster when you approach.',
-                'the stone walls are warm upon touch.',
-                'the hole in the corner is deeper now. very recent.'
+                'something has been inside the cage recently. very recently..',
+                'the pipes are too warm. much too warm.',
+                'the liquid from the jar moves slowly toward the stairs.'
             ],
             [
-                'the music box will not stop.',
-                'the walls pulse slowly, like breathing.',
-                "something is at the edge of the hole. it is looking up at you.",
+                'the cage is locked. from the inside.',
+                'the pipes screamed for exactly one second.',
+                "the liquid has stopped at you feet. it is waiting.",
             ],
         ],
-        flashlightReveal: 'Carved into the stone floor beneath the shelf: a circle of symbol surrounding a name. Your name.',
+        flashlightReveal: 'the beam has hit the cage. scratched into the wood floor inside it: IT LOCKS FROM THE OUTSIDE. THIS IS A LIE.',
     },
 };
