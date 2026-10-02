@@ -61,6 +61,12 @@ export default function App(){
       return;
     }
 
+    if (ghostRoom() !== room()){
+      showExamine('the presence is not here. you need to find it first', 2500);
+      bump(5);
+      return;
+    }
+
     setSaltLeft(saltLeft() - 1);
     setBanished([...banished(), room()]);
     setAgitation(a => Math.max(0, a - 20));
