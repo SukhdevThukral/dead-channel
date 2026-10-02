@@ -1,4 +1,4 @@
-import { room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId} from './state';
+import {doorsLocked, setDoorsLocked, lightsOut, setLightsOut, room, setAgitation, ghostRoom, setGhostRoom, setEmfLevel, setEventText, bump, banished, agitation, scared, won, setShowGhost, type roomId, setExamineText} from './state';
 
 import {creak, knock, heartbeat, burst} from './audio';
 
@@ -38,6 +38,14 @@ function later(fn: () => void, ms: number) {
 
 function every(fn: () => void, ms: number) {
     intervals.push(window.setInterval(fn,ms));
+}
+
+function scheduleDoorLock() {
+    later(() => {
+        if (scared() || won()){
+            return;
+        }
+    })
 }
 
 export function startEvents() {
