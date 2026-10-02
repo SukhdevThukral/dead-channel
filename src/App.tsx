@@ -147,6 +147,12 @@ export default function App(){
             <div class='ghost-flash'/>
           </Show>
 
+          <Show when={tool() === 'salt' && current().anchor && !banished().includes(room())}>
+            <div class='anchor-hint'>
+              USE SALT HERE: {current().anchor!.name.toUpperCase()}
+            </div>
+          </Show>
+
           <For each={Object.entries(current().exits)}>
             {([to, s]) => (
               <button class='hotspot' disabled={doorsLocked()} style={{left: `${s!.x}%`, top: `${s!.y}%`, width: `${s!.w}%`, height: `${s!.h}%`}} onClick={() => {setRoom(to as roomId); bump(2); }}/>
