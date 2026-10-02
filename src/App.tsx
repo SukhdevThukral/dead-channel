@@ -3,7 +3,7 @@ import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
 import { startEvents, stopEvents } from './events';
 
-import { doorsLocked, lightsOut } from './state';
+import { doorsLocked, lightsOut, ghostWeakened } from './state';
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
@@ -51,8 +51,13 @@ export default function App(){
       bump(10);
       return;
     }
+    
     if (saltLeft() <= 0){
-      showExamine('No salt remaining.', 2000);
+      showExamine('no salt remaining.', 2000);
+    }
+
+    if (!ghostWeakened()){
+      showExamine('the presence resists. weaken it first.', 2500);
       return;
     }
 
@@ -147,6 +152,10 @@ export default function App(){
             <div class='ghost-flash'/>
           </Show>
 
+          <Show when={ghostWeakened()}>
+            <div class='weakened-notice'>▸ SIGNAL DISTRUPTED - PLACE SALT NOW.</div>
+          </Show>
+
           <Show when={tool() === 'salt' && current().anchor && !banished().includes(room())}>
             <div class='anchor-hint'>
               USE SALT HERE: {current().anchor!.name.toUpperCase()}
@@ -160,7 +169,7 @@ export default function App(){
           </For>
 
           <Show when={current().anchor && !banished().includes(room())}>
-            <button class='hotspot anchor' style={{left: `${current().anchor!.spot.x}%`, top: `${current().anchor!.spot.y}%`,
+            <button class='hotspot anchor' classList={{'anchor-ready' : tool() === 'salt', 'anchor-weakened' : tool() === 'salt' && ghostWeakened()}} style={{left: `${current().anchor!.spot.x}%`, top: `${current().anchor!.spot.y}%`,
                 width: `${current().anchor!.spot.w}%`, height: `${current().anchor!.spot.h}%`,}} onClick={useAnchor}/>
           </Show>
         </div>
