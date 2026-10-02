@@ -302,7 +302,7 @@ export default function App(){
 
       <Show when={won() && !scared()}>
         <div class='end'>
-          <h2>THE CHANNEL GOES QUIET</h2>
+          <h2>THE CREATURE HAS BEEN SEALED</h2>
           <button onClick={() => { stopEvents(); location.reload()}}>play again</button>
         </div>
       </Show>
