@@ -213,6 +213,15 @@ button:disabled{
   animation: anchor-pulse 2.5s ease-in-out infinite;
 }
 
+.lights-out {
+  filter: brightness(0.02) !important;
+  transition: filter 0.1s !important;
+}
+
+.hotspot:disabled {
+  pointer-events: none;
+}
+
 .salt-panel {
   position: fixed;
   bottom: -120px;
