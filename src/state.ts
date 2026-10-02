@@ -47,9 +47,19 @@ export function bump(n:number) {
     if (agitation() >= 100 && !scareQueued) {
         scareQueued = true;
         silence();
-        setTimeout(() => {
-            setScared(true);
-            sting();
-        }, 2500);
+
+        let flashes = 0;
+        const glitch = setInterval(() => {
+            setScared(flashes%2 === 0);
+            flashes++
+            if (flashes >= 10) {
+                clearInterval(glitch);
+                setScared(false);
+                setTimeout(() => {
+                    setScared(true);
+                    sting();
+                }, 100)
+            }
+        }, 120)
     }
 }
