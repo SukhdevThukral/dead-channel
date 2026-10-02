@@ -536,9 +536,9 @@ button:disabled{
   position: absolute;
   bottom: 68px;
   left: 12px;
-  font-size: 0.52rem;
+  font-size: 0.6rem;
   letter-spacing: 0.22em;
-  color: #666;
+  color: #888;
   z-index: 10;
   pointer-events: none;
   line-height: 1.8;
