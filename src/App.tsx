@@ -237,6 +237,9 @@ export default function App(){
         </Show>
 
         <Show when={tool() === 'hand'}>
+          <div class='hand-panel'>
+            <img src='/hand.png' class='hand-img' alt=''/>
+          </div>
           <div class='tool-panel'>
             <button class='tool-action-btn' onClick={examineRoom}>
               EXAMINE ROOM
