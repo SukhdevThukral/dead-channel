@@ -3,6 +3,7 @@ import {ROOMS} from './rooms';
 import {ask, QUESTIONS, startVoice, stopVoice, type Question} from './radio';
 import { startEvents, stopEvents } from './events';
 
+import { doorsLocked, lightsOut } from './state';
 
 import {
   started, setStarted, reduced, setReduced, room, setRoom, tool, setTool,
@@ -141,7 +142,7 @@ export default function App(){
           {banished().includes(ghostRoom()) ? ' · SEALED' : ''}
         </div>
 
-        <div class='room' style={{'background-image':`url(${current().img})`}}>
+        <div class='room' classList={{'lights-out' : lightsOut()}} style={{'background-image':`url(${current().img})`}}>
           <Show when={tool() === 'flashlight'}>
             <div class='flashlight-overlay'/>
           </Show>
@@ -152,7 +153,7 @@ export default function App(){
 
           <For each={Object.entries(current().exits)}>
             {([to, s]) => (
-              <button class='hotspot' style={{left: `${s!.x}%`, top: `${s!.y}%`, width: `${s!.w}%`, height: `${s!.h}%`}} onClick={() => {setRoom(to as roomId); bump(2); }}/>
+              <button class='hotspot' disabled={doorsLocked()} style={{left: `${s!.x}%`, top: `${s!.y}%`, width: `${s!.w}%`, height: `${s!.h}%`}} onClick={() => {setRoom(to as roomId); bump(2); }}/>
             )}
           </For>
 
